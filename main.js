@@ -13,6 +13,11 @@ window.addEventListener("load", function () {
 		};
 	};
 
+	var 
+		R0 = 2, R1 = 8,
+		S0 = 10, S1 = 40,
+		L0 = 100, L1 = 200;
+
 	var points = [];
 
 	var poisson = function (a) {
@@ -27,45 +32,48 @@ window.addEventListener("load", function () {
 
 	var genPoint = function () {
 		var a = Math.random(), b = Math.random();
-		var wp = cnv.width/(cnv.height + cnv.width);
-		var r = 20*Math.random() + 10;
+		var w = cnv.width + 2*L1, h = cnv.height + 2*L1;
+		var wp = w/(h + w);
+		var r = (R1 - R0)*Math.random() + R0;
 		var p, d;
 		if (a < wp) {
 			if (a < 0.5*wp) {
-				p = [b*cnv.width, -r];
+				p = [b*w - L1, -L1];
 				d = 0.5*Math.PI;
 			} else {
-				p = [b*cnv.width, cnv.height + r];
+				p = [b*w - L1, h - L1];
 				d = 1.5*Math.PI;
 			}
 		} else {
 			if (a > 0.5*(1 + wp)) {
-				p = [-r, b*cnv.height];
+				p = [-L1, b*h - L1];
 				d = 0;
 			} else {
-				p = [cnv.width + r, b*cnv.height];
+				p = [w - L1, b*h - L1];
 				d = Math.PI;
 			}
 		}
 		var da = d + Math.PI*(Math.random() - 0.5);
-		var s = 10 + 20*Math.random();
+		var s = S0 + (S1 - S0)*Math.random();
 		var v = [s*Math.cos(da), s*Math.sin(da)];
 		return new Point(r, p, v);
 	};
 
 	var genMultiplePoints = function (a) {
-		var n = poisson(a);
-		for (var i = 0; i < n; ++i) {
+		var nn = poisson(a);
+		for (var i = 0; i < nn; ++i) {
 			points.push(genPoint());
 		}
 	};
 
 	var move = function (dt) {
 		var arr = [];
+		var delta = 0.1;
+		var w = cnv.width + 2*L1, h = cnv.height + 2*L1;
 		for (var i = 0; i < points.length; ++i) {
 			var p = points[i];
 			p.move(dt);
-			if (!(p.p[0] < -2*p.r || p.p[0] > cnv.width + 2*p.r || p.p[1] < -2*p.r || p.p[1] > cnv.height + 2*p.r)) {
+			if (!(p.p[0] < -L1 - delta || p.p[0] > w - L1 + delta || p.p[1] < -L1 - delta || p.p[1] > h - L1 + delta)) {
 				arr.push(p);
 			}
 		}
@@ -83,6 +91,27 @@ window.addEventListener("load", function () {
 			ctx.arc(p.p[0],p.p[1],p.r,0,2*Math.PI);
 			ctx.fill();
 		}
+
+		for (var i = 0; i < points.length; ++i) {
+			for (var j = 0; j < i; ++j) {
+				var p0 = points[i];
+				var p1 = points[j];
+				var d = [p0.p[0] - p1.p[0], p0.p[1] - p1.p[1]];
+				var l = Math.sqrt(d[0]*d[0] + d[1]*d[1]);
+				if (l < L1) {
+					ctx.lineWidth = 2;
+					if (l < L0) {
+						ctx.strokeStyle = "#FFFFFF";
+					} else {
+						ctx.strokeStyle = "rgba(255,255,255," + (L1 - l)/(L1 - L0) + ")";
+					}
+					ctx.beginPath();
+					ctx.moveTo(p0.p[0], p0.p[1]);
+					ctx.lineTo(p1.p[0], p1.p[1]);
+					ctx.stroke();
+				}
+			}
+		}
 	};
 
 	var top = document.getElementById("top");
@@ -96,12 +125,12 @@ window.addEventListener("load", function () {
 	resize();
 
 	ms = 50;
-	var step = function () {
-		genMultiplePoints(1e-3*ms);
-		move(1e-3*ms);
+	var step = function (dt) {
+		genMultiplePoints((cnv.width + cnv.height + 4*L1)*2e-3*dt);
+		move(dt);
 		draw();
-		setTimeout(step, ms);
+		setTimeout(function () { step(1e-3*ms); }, ms);
 	}
 	
-	step();
+	step(2*(Math.min(cnv.width, cnv.height) + 2*L1)/(S0 + S1));
 });
