@@ -29,6 +29,7 @@ body {
 }
 
 #top-canvas {
+	display: block;
 	position: absolute;
 	top: 0px;
 	opacity: 0.5;
