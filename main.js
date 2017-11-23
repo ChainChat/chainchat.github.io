@@ -15,7 +15,7 @@ window.addEventListener("load", function () {
 
 	var 
 		R0 = 2, R1 = 8,
-		S0 = 10, S1 = 40,
+		S0 = 5, S1 = 20,
 		L0 = 100, L1 = 200;
 
 	var points = [];
@@ -61,6 +61,9 @@ window.addEventListener("load", function () {
 
 	var genMultiplePoints = function (a) {
 		var nn = poisson(a);
+		if (nn > 100) {
+			nn = 100;
+		}
 		for (var i = 0; i < nn; ++i) {
 			points.push(genPoint());
 		}
@@ -78,7 +81,6 @@ window.addEventListener("load", function () {
 			}
 		}
 		points = arr;
-		console.log(points.length);
 	};
 
 	var draw = function () {
@@ -120,17 +122,28 @@ window.addEventListener("load", function () {
 		cnv.height = top.offsetHeight;
 		draw();
 	};
-	top.addEventListener("resize", resize);
+	window.addEventListener("resize", resize);
 
 	resize();
 
-	ms = 50;
-	var step = function (dt) {
-		genMultiplePoints((cnv.width + cnv.height + 4*L1)*2e-3*dt);
+	var step = function (dt, dr) {
+		genMultiplePoints(1.0*dt);
 		move(dt);
-		draw();
-		setTimeout(function () { step(1e-3*ms); }, ms);
+		if (dr) {
+			draw();
+		}
+	}
+
+	ms = 50;
+	var step_timeout = function () {
+		step(1e-3*ms, true);
+		setTimeout(step_timeout, ms);
 	}
 	
-	step(2*(Math.min(cnv.width, cnv.height) + 2*L1)/(S0 + S1));
+	for(var i = 0; i < 100; ++i) {
+		step(10);
+	}
+	draw();
+
+	step_timeout();
 });
