@@ -38,34 +38,89 @@ body {
 	z-index: 1;
 }
 
-
 .section {
 	padding: 40px 4%;
 	min-height: 400px;
 }
 
+.section-goal {
+	padding: 40px 4%;
+	min-height: 100px;
+}
+
+.section-opportunity {
+	padding: 40px 4%;
+	min-height: 100px;
+	background-color: #363f44;
+	color: white;
+}
+
 .basics {
-	box-shadow: 0 0px 8px rgba(0,0,0,0.5);
 	z-index: 3;
+	background-color: #e7e9ea;
+}
+
+.sect-line-title {
+	font-size: 38px;
+}
+
+.sect-line-item {
+	display: inline-block;
+	margin: 24px 12%;
+	padding: 12px;
+	font-size: 24px;
+	box-shadow: 0px 2px 0px 0px rgba(0,0,0,0.3);
+}
+
+.sect-checkpoint-title {
+	font-size: 32px;
+	margin: 32px;
+}
+
+.sect-checkpoint-item {
+	display: inline-block;
+	margin: 24px 24%;
+	padding: 12px;
+	font-size: 24px;
+	box-shadow: 0px 2px 0px 0px rgba(0,0,0,0.3);
 }
 
 .sect-title {
 	font-size: 32px;
+	margin: 32px;
 }
 
 .sect-item {
 	display: inline-block;
-	margin: 24px 4%;
-	padding: 24px;
+	margin: 12px 2%;
+	padding: 12px;
 	width: 400px;
 	height: 100px;
 	font-size: 24px;
-	box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+	box-shadow: 1px 2px 1px 1px rgba(0,0,0,0.3);
+}
+
+a.doc:link, a.doc:visited {
+    background-color: #363f44;
+    color: white;
+    padding: 14px 25px;
+    text-align: center; 
+    text-decoration: none;
+    display: inline-block;
+}
+
+a.doc:hover, a.doc:active {
+    color: red;
 }
 
 #bottom {
 	padding: 24px;
-	font-size: 32px;
+	font-size: 24px;
 	background-color: #363f44;
 	color: #ffffff;
+}
+
+.bottom-motto {
+	font-size: 24px;
+	padding: 24px;
 }
